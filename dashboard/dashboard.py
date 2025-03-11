@@ -2,9 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import os
 
-day_df = pd.read_csv("day.csv")
-hour_df = pd.read_csv("hour.csv")
+dir = os.path.dirname(os.path.abspath(__file__))
+dir_day = dir + "/day.csv"
+hour_dir = dir + "/hour.csv"
+
+day_df = pd.read_csv(dir_day)
+hour_df = pd.read_csv(hour_dir)
 
 st.title("Analisis Bike Sharing Dataset")
 st.write("Analisis data bike sharing untuk mengetahui pola permintaan sewa sepeda")
