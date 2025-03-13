@@ -24,6 +24,26 @@ with col2:
 
 st.subheader("Pengaruh Variabel Cuaca terhadap tingkat permintaan sewa")
 
+hour_df['dteday'] = pd.to_datetime(hour_df['dteday'])
+
+st.sidebar.header("Filter Data")
+min_date = hour_df['dteday'].min()
+max_date = hour_df['dteday'].max()
+
+# Memilih rentang tanggal dengan date_input
+selected_dates = st.sidebar.date_input(
+    label='Rentang Waktu',
+    min_value=min_date,
+    max_value=max_date,
+    value=[min_date, max_date]
+)
+
+# Pastikan pengguna memilih rentang yang valid
+if isinstance(selected_dates, tuple) and len(selected_dates) == 2:
+    start_date, end_date = selected_dates
+    start_date, end_date = pd.to_datetime(start_date), pd.to_datetime(end_date)
+    hour_df = hour_df[(hour_df['dteday'] >= start_date) & (hour_df['dteday'] <= end_date)]
+
 # List variabel cuaca dan warnanya
 weather_vars = [
     ("temp", "Temperatur (Normalized)", "#FFB74D"),
