@@ -25,10 +25,13 @@ with col2:
 st.subheader("Pengaruh Variabel Cuaca terhadap tingkat permintaan sewa")
 
 hour_df['dteday'] = pd.to_datetime(hour_df['dteday'])
+day_df['dteday'] = pd.to_datetime(day_df['dteday'])
 
 st.sidebar.header("Filter Data")
 min_date = hour_df['dteday'].min()
 max_date = hour_df['dteday'].max()
+min_date = day_df['dteday'].min()
+max_date = day_df['dteday'].max()
 
 # Memilih rentang tanggal dengan date_input
 selected_dates = st.sidebar.date_input(
@@ -43,6 +46,7 @@ if isinstance(selected_dates, tuple) and len(selected_dates) == 2:
     start_date, end_date = selected_dates
     start_date, end_date = pd.to_datetime(start_date), pd.to_datetime(end_date)
     hour_df = hour_df[(hour_df['dteday'] >= start_date) & (hour_df['dteday'] <= end_date)]
+    day_df = day_df[(day_df['dteday'] >= start_date) & (day_df['dteday'] <= end_date)]
 
 # List variabel cuaca dan warnanya
 weather_vars = [
@@ -55,14 +59,14 @@ weather_vars = [
 for var, label, color in weather_vars:
     st.subheader(f"{label} vs. Jumlah Sewa")
     fig, ax = plt.subplots(figsize=(8, 5))
-    sns.scatterplot(ax=ax, x=hour_df[var], y=hour_df['cnt'], color=color, alpha=0.6)
+    sns.scatterplot(ax=ax, x=day_df[var], y=day_df['cnt'], color=color, alpha=0.6)
     ax.set_xlabel(label)
     ax.set_ylabel("Jumlah Sewa")
     st.pyplot(fig)
 
 # Membandingkan jumlah sewa antara hari kerja dan akhir pekan
 st.subheader("Rata-rata Jumlah Sewa Sepeda: Hari Kerja vs. Akhir Pekan")
-df_grouped = hour_df.groupby('workingday')['cnt'].mean().reset_index()
+df_grouped = day_df.groupby('workingday')['cnt'].mean().reset_index()
 
 fig, ax = plt.subplots(figsize=(8, 6))
 sns.barplot(ax=ax, x=df_grouped['workingday'], y=df_grouped['cnt'], palette=["#64B5F6", "#FFB74D"], legend=False)
